@@ -49,7 +49,7 @@ namespace PlaylistGrabber
         {
             SetStateBusy();
 
-            var downloadFilePaths = listBox.Items.Cast<string>().ToList();
+            var uris = listBox.Items.Cast<Uri>().ToList();
 
             _downloader = new Downloader();
 
@@ -58,7 +58,7 @@ namespace PlaylistGrabber
 
             Task.Run(() =>
             {
-                _downloader.DownloadFiles(downloadFilePaths);
+                _downloader.DownloadFiles(uris);
             })
             .ContinueWith(task => timer.Stop(), TaskScheduler.FromCurrentSynchronizationContext())
             .ContinueWith(task => SetStateIdle(), TaskScheduler.FromCurrentSynchronizationContext());
@@ -107,21 +107,21 @@ namespace PlaylistGrabber
 
         private void AddPlaylistContentsToListBox(string playlistFilePath)
         {
-            foreach (var downloadFilePath in File.ReadAllLines(playlistFilePath)
-                .Where(downloadFilePath => !string.IsNullOrWhiteSpace(downloadFilePath)))
+            foreach (var url in File.ReadAllLines(playlistFilePath)
+                .Where(url => !string.IsNullOrWhiteSpace(url)))
             {
                 Uri uri;
                 try
                 {
-                    uri = new Uri(downloadFilePath);
+                    uri = new Uri(url);
                 }
                 catch (Exception)
                 {
                     continue;
                 }
-                if (!listBox.Items.Contains(uri.ToString()))
+                if (!listBox.Items.Contains(uri))
                 {
-                    listBox.Items.Add(uri.ToString());
+                    listBox.Items.Add(uri);
                 }
             }
         }
