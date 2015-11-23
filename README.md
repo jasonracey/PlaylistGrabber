@@ -1,2 +1,2 @@
 # PlaylistGrabber
-Downloads files from a m3u playlist.
+Downloads files from an m3u playlist.
