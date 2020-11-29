@@ -38,7 +38,7 @@ namespace PlaylistGrabber
             var directoryName = parts[parts.Length - 2];
             var fileName = parts[parts.Length - 1];
 
-            string destinationDirectory = $@"Y:\Downloads\{directoryName}";
+            string destinationDirectory = $@"Z:\Downloads\{directoryName}";
 
             // only creates dir if it doesn't already exist
             Directory.CreateDirectory(destinationDirectory);
