@@ -13,6 +13,11 @@ namespace PlaylistGrabber
 
         public int TotalFiles { get; private set; }
 
+        public Downloader()
+        {
+            State = string.Empty;
+        }
+
         public void DownloadFiles(List<Uri> uris)
         {
             TotalFiles = uris.Count;

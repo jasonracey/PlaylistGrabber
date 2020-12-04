@@ -10,7 +10,7 @@ namespace PlaylistGrabber
     {
         private const string FileSearchPattern = @"*.m3u";
 
-        private Downloader _downloader;
+        private Downloader _downloader = new Downloader();
 
         public PlaylistGrabber()
         {
