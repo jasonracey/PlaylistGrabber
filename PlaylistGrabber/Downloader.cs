@@ -35,8 +35,8 @@ namespace PlaylistGrabber
         private static string GetDestinationPath(Uri uri)
         {
             var parts = uri.ToString().Split('/');
-            var directoryName = parts[parts.Length - 2];
-            var fileName = parts[parts.Length - 1];
+            var directoryName = parts[^2];
+            var fileName = parts[^1];
 
             string destinationDirectory = $@"Z:\Downloads\{directoryName}";
 
