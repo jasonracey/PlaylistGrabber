@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace PlaylistGrabber
 {
@@ -20,21 +22,17 @@ namespace PlaylistGrabber
 
         public void DownloadFiles(List<Uri> uris)
         {
+            State = $"Downloading...";
             TotalFiles = uris.Count;
-            foreach (var uri in uris)
-            {
-                DownloadFile(uri);
-                DownloadedFiles++;
-            }
+            Task.WaitAll(uris.Select(uri => DownloadFileAsync(uri)).ToArray());
         }
 
-        private void DownloadFile(Uri uri)
+        private async Task DownloadFileAsync(Uri uri)
         {
-            State = $"Downloading {uri} ...";
-
-            var webClient = new WebClient();
             var destinationPath = GetDestinationPath(uri);
-            webClient.DownloadFile(uri, destinationPath);
+            using var webClient = new WebClient();
+            await webClient.DownloadFileTaskAsync(uri, destinationPath).ConfigureAwait(false);
+            DownloadedFiles++;
         }
 
         private static string GetDestinationPath(Uri uri)
