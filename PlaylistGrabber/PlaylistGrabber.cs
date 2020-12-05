@@ -24,17 +24,12 @@ namespace PlaylistGrabber
 
         private void buttonBrowse_Click(object sender, EventArgs e)
         {
-            var dialogResult = folderBrowserDialog.ShowDialog();
+            var dialogResult = openFileDialog.ShowDialog();
             if (dialogResult == DialogResult.OK)
             {
-                var selectedPath = folderBrowserDialog.SelectedPath;
-                if (Directory.Exists(selectedPath))
+                foreach (var fileName in openFileDialog.FileNames)
                 {
-                    var playlistFilePaths = Directory.GetFiles(selectedPath, FileSearchPattern, SearchOption.AllDirectories);
-                    foreach (var playlistFilePath in playlistFilePaths)
-                    {
-                        AddPlaylistContentsToListBox(playlistFilePath);
-                    }
+                    AddPlaylistContentsToListBox(fileName);
                 }
             }
             SetButtonState();

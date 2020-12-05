@@ -38,16 +38,15 @@ namespace PlaylistGrabber
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.labelProgress = new System.Windows.Forms.Label();
             this.timer = new System.Windows.Forms.Timer(this.components);
-            this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
+            this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.SuspendLayout();
             // 
             // labelMessage
             // 
             this.labelMessage.AutoSize = true;
-            this.labelMessage.Location = new System.Drawing.Point(7, 5);
-            this.labelMessage.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelMessage.Location = new System.Drawing.Point(12, 10);
             this.labelMessage.Name = "labelMessage";
-            this.labelMessage.Size = new System.Drawing.Size(93, 13);
+            this.labelMessage.Size = new System.Drawing.Size(160, 25);
             this.labelMessage.TabIndex = 0;
             this.labelMessage.Text = "Drop playlists here";
             // 
@@ -55,10 +54,11 @@ namespace PlaylistGrabber
             // 
             this.listBox.AllowDrop = true;
             this.listBox.FormattingEnabled = true;
-            this.listBox.Location = new System.Drawing.Point(10, 30);
-            this.listBox.Margin = new System.Windows.Forms.Padding(2);
+            this.listBox.ItemHeight = 25;
+            this.listBox.Location = new System.Drawing.Point(17, 58);
+            this.listBox.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.listBox.Name = "listBox";
-            this.listBox.Size = new System.Drawing.Size(563, 459);
+            this.listBox.Size = new System.Drawing.Size(936, 879);
             this.listBox.Sorted = true;
             this.listBox.TabIndex = 1;
             this.listBox.TabStop = false;
@@ -67,10 +67,10 @@ namespace PlaylistGrabber
             // 
             // buttonStart
             // 
-            this.buttonStart.Location = new System.Drawing.Point(491, 523);
-            this.buttonStart.Margin = new System.Windows.Forms.Padding(2);
+            this.buttonStart.Location = new System.Drawing.Point(818, 1006);
+            this.buttonStart.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.buttonStart.Name = "buttonStart";
-            this.buttonStart.Size = new System.Drawing.Size(82, 27);
+            this.buttonStart.Size = new System.Drawing.Size(137, 52);
             this.buttonStart.TabIndex = 3;
             this.buttonStart.Text = "Start";
             this.buttonStart.UseVisualStyleBackColor = true;
@@ -78,10 +78,10 @@ namespace PlaylistGrabber
             // 
             // buttonClear
             // 
-            this.buttonClear.Location = new System.Drawing.Point(405, 523);
-            this.buttonClear.Margin = new System.Windows.Forms.Padding(2);
+            this.buttonClear.Location = new System.Drawing.Point(675, 1006);
+            this.buttonClear.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.buttonClear.Name = "buttonClear";
-            this.buttonClear.Size = new System.Drawing.Size(82, 27);
+            this.buttonClear.Size = new System.Drawing.Size(137, 52);
             this.buttonClear.TabIndex = 2;
             this.buttonClear.Text = "Clear";
             this.buttonClear.UseVisualStyleBackColor = true;
@@ -89,10 +89,10 @@ namespace PlaylistGrabber
             // 
             // buttonBrowse
             // 
-            this.buttonBrowse.Location = new System.Drawing.Point(319, 523);
-            this.buttonBrowse.Margin = new System.Windows.Forms.Padding(2);
+            this.buttonBrowse.Location = new System.Drawing.Point(532, 1006);
+            this.buttonBrowse.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.buttonBrowse.Name = "buttonBrowse";
-            this.buttonBrowse.Size = new System.Drawing.Size(82, 27);
+            this.buttonBrowse.Size = new System.Drawing.Size(137, 52);
             this.buttonBrowse.TabIndex = 1;
             this.buttonBrowse.Text = "Browse";
             this.buttonBrowse.UseVisualStyleBackColor = true;
@@ -100,18 +100,17 @@ namespace PlaylistGrabber
             // 
             // progressBar
             // 
-            this.progressBar.Location = new System.Drawing.Point(10, 523);
-            this.progressBar.Margin = new System.Windows.Forms.Padding(2);
+            this.progressBar.Location = new System.Drawing.Point(17, 1006);
+            this.progressBar.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(305, 27);
+            this.progressBar.Size = new System.Drawing.Size(508, 52);
             this.progressBar.TabIndex = 5;
             // 
             // labelProgress
             // 
-            this.labelProgress.Location = new System.Drawing.Point(11, 509);
-            this.labelProgress.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelProgress.Location = new System.Drawing.Point(18, 979);
             this.labelProgress.Name = "labelProgress";
-            this.labelProgress.Size = new System.Drawing.Size(55, 12);
+            this.labelProgress.Size = new System.Drawing.Size(92, 23);
             this.labelProgress.TabIndex = 6;
             this.labelProgress.Text = "0/0";
             // 
@@ -119,17 +118,16 @@ namespace PlaylistGrabber
             // 
             this.timer.Tick += new System.EventHandler(this.timer_Tick);
             // 
-            // folderBrowserDialog
+            // openFileDialog
             // 
-            this.folderBrowserDialog.Description = "Select a folder containing one or more playlists";
-            this.folderBrowserDialog.SelectedPath = "Y:\\Files\\Music";
-            this.folderBrowserDialog.ShowNewFolderButton = false;
+            this.openFileDialog.Filter = "Playlist files|*.m3u|All files|*.*";
+            this.openFileDialog.Multiselect = true;
             // 
             // PlaylistGrabber
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(584, 561);
+            this.ClientSize = new System.Drawing.Size(973, 1079);
             this.Controls.Add(this.labelProgress);
             this.Controls.Add(this.progressBar);
             this.Controls.Add(this.buttonBrowse);
@@ -138,7 +136,7 @@ namespace PlaylistGrabber
             this.Controls.Add(this.listBox);
             this.Controls.Add(this.labelMessage);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Margin = new System.Windows.Forms.Padding(2);
+            this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "PlaylistGrabber";
             this.Text = "Playlist Grabber";
             this.Load += new System.EventHandler(this.PlaylistGrabber_Load);
@@ -157,7 +155,7 @@ namespace PlaylistGrabber
         private System.Windows.Forms.ProgressBar progressBar;
         private System.Windows.Forms.Label labelProgress;
         private System.Windows.Forms.Timer timer;
-        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog;
+        private System.Windows.Forms.OpenFileDialog openFileDialog;
     }
 }
 
