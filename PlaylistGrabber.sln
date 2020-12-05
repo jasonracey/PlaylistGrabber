@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30717.126
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlaylistGrabber", "PlaylistGrabber\PlaylistGrabber.csproj", "{D8412C62-FA52-4D49-BE24-8AD8D39B34C8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlaylistGrabber", "PlaylistGrabber\PlaylistGrabber.csproj", "{D8412C62-FA52-4D49-BE24-8AD8D39B34C8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FF7BF3A9-5064-4A43-8A76-045F79530409}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlaylistGrabber.Test", "PlaylistGrabber.Test\PlaylistGrabber.Test.csproj", "{ECF213A3-AB3D-44AA-8E09-0B1BABE40791}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,10 @@ Global
 		{D8412C62-FA52-4D49-BE24-8AD8D39B34C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D8412C62-FA52-4D49-BE24-8AD8D39B34C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D8412C62-FA52-4D49-BE24-8AD8D39B34C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ECF213A3-AB3D-44AA-8E09-0B1BABE40791}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ECF213A3-AB3D-44AA-8E09-0B1BABE40791}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ECF213A3-AB3D-44AA-8E09-0B1BABE40791}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ECF213A3-AB3D-44AA-8E09-0B1BABE40791}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
