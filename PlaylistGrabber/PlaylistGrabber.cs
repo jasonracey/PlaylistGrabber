@@ -44,7 +44,7 @@ namespace PlaylistGrabber
         {
             SetStateBusy();
 
-            var uris = listBox.Items.Cast<Uri>().ToList();
+            var sourcePaths = listBox.Items.Cast<string>().ToList();
 
             _downloader = new Downloader();
 
@@ -53,7 +53,7 @@ namespace PlaylistGrabber
 
             Task.Run(() =>
             {
-                _downloader.DownloadFiles(uris);
+                _downloader.DownloadFiles(sourcePaths);
             })
             .ContinueWith(task => timer.Stop(), TaskScheduler.FromCurrentSynchronizationContext())
             .ContinueWith(task => SetStateIdle(), TaskScheduler.FromCurrentSynchronizationContext());

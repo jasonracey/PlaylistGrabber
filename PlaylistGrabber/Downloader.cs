@@ -1,59 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 
 namespace PlaylistGrabber
 {
     public class Downloader
     {
+        private readonly IDestinationPathBuilder destinationPathBuilder;
+        private readonly IWebClientWrapper webClientWrapper;
+
         public string State { get; private set; }
 
         public int DownloadedFiles { get; private set; }
 
         public int TotalFiles { get; private set; }
 
-        public Downloader()
+        public Downloader(
+            IDestinationPathBuilder destinationPathBuilder,
+            IWebClientWrapper webClientWrapper)
         {
+            this.destinationPathBuilder = destinationPathBuilder ?? 
+                throw new ArgumentNullException(nameof(destinationPathBuilder));
+
+            this.webClientWrapper = webClientWrapper ??
+                throw new ArgumentNullException(nameof(webClientWrapper));
+
             State = string.Empty;
         }
 
-        public void DownloadFiles(List<Uri> uris)
+        public void DownloadFiles(IList<string> sourcePaths)
         {
             State = $"Downloading...";
-            TotalFiles = uris.Count;
-            Task.WaitAll(uris.Select(uri => DownloadFileAsync(uri)).ToArray());
+            TotalFiles = sourcePaths.Count;
+            Task.WaitAll(sourcePaths.Select(sourcePath => DownloadFileAsync(sourcePath)).ToArray());
         }
 
-        private async Task DownloadFileAsync(Uri uri)
+        private async Task DownloadFileAsync(string sourcePath)
         {
-            var destinationPath = GetDestinationPath(uri);
-            using var webClient = new WebClient();
-            await webClient.DownloadFileTaskAsync(uri, destinationPath).ConfigureAwait(false);
+            var destinationPath = this.destinationPathBuilder.GetDestinationPath(sourcePath);
+            await this.webClientWrapper.DownloadFileTaskAsync(sourcePath, destinationPath).ConfigureAwait(false);
             DownloadedFiles++;
-        }
-
-        private static string GetDestinationPath(Uri uri)
-        {
-            var parts = uri.ToString().Split('/');
-            var directoryName = parts[^2];
-            var fileName = parts[^1];
-
-            string destinationDirectory = $@"Z:\Downloads\{directoryName}";
-
-            // only creates dir if it doesn't already exist
-            Directory.CreateDirectory(destinationDirectory);
-
-            string destinationPath = $@"{destinationDirectory}\{fileName}";
-
-            if (File.Exists(destinationPath))
-            {
-                File.Delete(destinationPath);
-            }
-
-            return destinationPath;
         }
     }
 }
