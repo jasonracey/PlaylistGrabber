@@ -30,6 +30,12 @@ namespace PlaylistGrabber
 
         public string CreateDestinationPath(string sourcePath)
         {
+            if (string.IsNullOrWhiteSpace(sourcePath))
+                throw new ArgumentException("Must not be null or white space", nameof(sourcePath));
+
+            if (!Uri.IsWellFormedUriString(sourcePath, UriKind.Absolute))
+                throw new ArgumentException("Must be a well-formed absolute uri string", nameof(sourcePath));
+
             var parts = sourcePath.Split('/');
             var directoryName = parts[^2];
             var fileName = parts[^1];
