@@ -40,9 +40,17 @@ namespace PlaylistGrabber
 
         public void DownloadFiles(IEnumerable<string> sourcePaths)
         {
+            if (sourcePaths == null)
+                throw new ArgumentNullException(nameof(sourcePaths));
+
+            var validSourcePaths = sourcePaths
+                .Where(s => !string.IsNullOrWhiteSpace(s))
+                .Where(s => Uri.IsWellFormedUriString(s, UriKind.Absolute));
+
             State = $"Downloading...";
-            TotalFiles = sourcePaths.Count;
-            Task.WaitAll(sourcePaths.Select(sourcePath => DownloadFileAsync(sourcePath)).ToArray());
+            TotalFiles = validSourcePaths.Count();
+
+            Task.WaitAll(validSourcePaths.Select(sourcePath => DownloadFileAsync(sourcePath)).ToArray());
         }
 
         private async Task DownloadFileAsync(string sourcePath)
