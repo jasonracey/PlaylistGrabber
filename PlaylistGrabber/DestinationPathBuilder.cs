@@ -9,13 +9,18 @@ namespace PlaylistGrabber
 
     public class DestinationPathBuilder : IDestinationPathBuilder
     {
+        private readonly IConfiguration configuration;
         private readonly IDirectoryWrapper directoryWrapper;
         private readonly IFileWrapper fileWrapper;
 
         public DestinationPathBuilder(
+            IConfiguration configuration,
             IDirectoryWrapper directoryWrapper,
             IFileWrapper fileWrapper)
         {
+            this.configuration = configuration ??
+                throw new ArgumentNullException(nameof(configuration));
+
             this.directoryWrapper = directoryWrapper ??
                 throw new ArgumentNullException(nameof(directoryWrapper));
 
@@ -29,12 +34,12 @@ namespace PlaylistGrabber
             var directoryName = parts[^2];
             var fileName = parts[^1];
 
-            string destinationDirectory = $@"Z:\Downloads\{directoryName}";
+            var destinationDirectory = $@"{configuration.DestinationPathBase}\{directoryName}";
 
             // only creates dir if it doesn't already exist
             this.directoryWrapper.CreateDirectory(destinationDirectory);
 
-            string destinationPath = $@"{destinationDirectory}\{fileName}";
+            var destinationPath = $@"{destinationDirectory}\{fileName}";
 
             if (this.fileWrapper.Exists(destinationPath))
             {
