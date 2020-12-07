@@ -8,7 +8,7 @@ namespace PlaylistGrabber
 {
     public partial class PlaylistGrabber : Form
     {
-        private const string FileSearchPattern = @"*.m3u";
+        private const string PlaylistFileSearchPattern = @"*.m3u";
 
         private readonly IDownloader downloader;
 
@@ -66,7 +66,7 @@ namespace PlaylistGrabber
             {
                 if (Directory.Exists(path))
                 {
-                    var playlistFilePaths = Directory.GetFiles(path, FileSearchPattern, SearchOption.AllDirectories);
+                    var playlistFilePaths = Directory.GetFiles(path, PlaylistFileSearchPattern, SearchOption.AllDirectories);
                     foreach (var playlistFilePath in playlistFilePaths)
                     {
                         AddPlaylistContentsToListBox(playlistFilePath);
