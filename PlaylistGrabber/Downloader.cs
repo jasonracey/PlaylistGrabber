@@ -5,7 +5,16 @@ using System.Threading.Tasks;
 
 namespace PlaylistGrabber
 {
-    public class Downloader
+    public interface IDownloader
+    {
+        int DownloadedFiles { get; }
+        string State { get; }
+        int TotalFiles { get; }
+
+        void DownloadFiles(IEnumerable<string> sourcePaths);
+    }
+
+    public class Downloader : IDownloader
     {
         private readonly IDestinationPathBuilder destinationPathBuilder;
         private readonly IWebClientWrapper webClientWrapper;
@@ -20,7 +29,7 @@ namespace PlaylistGrabber
             IDestinationPathBuilder destinationPathBuilder,
             IWebClientWrapper webClientWrapper)
         {
-            this.destinationPathBuilder = destinationPathBuilder ?? 
+            this.destinationPathBuilder = destinationPathBuilder ??
                 throw new ArgumentNullException(nameof(destinationPathBuilder));
 
             this.webClientWrapper = webClientWrapper ??
@@ -29,7 +38,7 @@ namespace PlaylistGrabber
             State = string.Empty;
         }
 
-        public void DownloadFiles(IList<string> sourcePaths)
+        public void DownloadFiles(IEnumerable<string> sourcePaths)
         {
             State = $"Downloading...";
             TotalFiles = sourcePaths.Count;
@@ -38,7 +47,7 @@ namespace PlaylistGrabber
 
         private async Task DownloadFileAsync(string sourcePath)
         {
-            var destinationPath = this.destinationPathBuilder.GetDestinationPath(sourcePath);
+            var destinationPath = this.destinationPathBuilder.CreateDestinationPath(sourcePath);
             await this.webClientWrapper.DownloadFileTaskAsync(sourcePath, destinationPath).ConfigureAwait(false);
             DownloadedFiles++;
         }

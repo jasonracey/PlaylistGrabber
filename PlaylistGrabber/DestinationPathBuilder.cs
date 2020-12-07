@@ -4,7 +4,7 @@ namespace PlaylistGrabber
 {
     public interface IDestinationPathBuilder
     {
-        string GetDestinationPath(string sourcePath);
+        string CreateDestinationPath(string sourcePath);
     }
 
     public class DestinationPathBuilder : IDestinationPathBuilder
@@ -23,7 +23,7 @@ namespace PlaylistGrabber
                 throw new ArgumentNullException(nameof(fileWrapper));
         }
 
-        public string GetDestinationPath(string sourcePath)
+        public string CreateDestinationPath(string sourcePath)
         {
             var parts = sourcePath.Split('/');
             var directoryName = parts[^2];

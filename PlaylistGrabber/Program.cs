@@ -1,7 +1,5 @@
+using Autofac;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace PlaylistGrabber
@@ -17,7 +15,23 @@ namespace PlaylistGrabber
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new PlaylistGrabber());
+
+            using var scope = BuildContainer().BeginLifetimeScope();
+            var playlistGrabber = new PlaylistGrabber(scope.Resolve<IDownloader>());
+
+            Application.Run(playlistGrabber);
+        }
+
+        static IContainer BuildContainer()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<Configuration>().As<IConfiguration>();
+            builder.RegisterType<DestinationPathBuilder>().As<IDestinationPathBuilder>();
+            builder.RegisterType<DirectoryWrapper>().As<IDirectoryWrapper>();
+            builder.RegisterType<Downloader>().As<IDownloader>();
+            builder.RegisterType<FileWrapper>().As<IFileWrapper>();
+            builder.RegisterType<WebClientWrapper>().As<IWebClientWrapper>();
+            return builder.Build();
         }
     }
 }

@@ -10,10 +10,13 @@ namespace PlaylistGrabber
     {
         private const string FileSearchPattern = @"*.m3u";
 
-        private Downloader _downloader = new Downloader();
+        private readonly IDownloader downloader;
 
-        public PlaylistGrabber()
+        public PlaylistGrabber(IDownloader downloader)
         {
+            this.downloader = downloader ??
+                throw new ArgumentNullException(nameof(downloader));
+
             InitializeComponent();
         }
 
@@ -44,16 +47,14 @@ namespace PlaylistGrabber
         {
             SetStateBusy();
 
-            var sourcePaths = listBox.Items.Cast<string>().ToList();
-
-            _downloader = new Downloader();
+            var sourcePaths = listBox.Items.Cast<string>();
 
             timer.Interval = 500;
             timer.Start();
 
             Task.Run(() =>
             {
-                _downloader.DownloadFiles(sourcePaths);
+                this.downloader.DownloadFiles(sourcePaths);
             })
             .ContinueWith(task => timer.Stop(), TaskScheduler.FromCurrentSynchronizationContext())
             .ContinueWith(task => SetStateIdle(), TaskScheduler.FromCurrentSynchronizationContext());
@@ -89,15 +90,15 @@ namespace PlaylistGrabber
 
         private void timer_Tick(object sender, EventArgs e)
         {
-            if (_downloader.State != null)
+            if (this.downloader.State != null)
             {
-                labelMessage.Text = _downloader.State;
+                labelMessage.Text = this.downloader.State;
             }
 
-            SetProgressLabel(_downloader.DownloadedFiles, _downloader.TotalFiles);
+            SetProgressLabel(this.downloader.DownloadedFiles, this.downloader.TotalFiles);
 
-            progressBar.Maximum = _downloader.TotalFiles;
-            progressBar.Value = _downloader.DownloadedFiles;
+            progressBar.Maximum = this.downloader.TotalFiles;
+            progressBar.Value = this.downloader.DownloadedFiles;
         }
 
         private void AddPlaylistContentsToListBox(string playlistFilePath)
