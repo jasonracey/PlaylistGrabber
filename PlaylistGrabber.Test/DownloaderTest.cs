@@ -3,6 +3,7 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace PlaylistGrabber
 {
@@ -29,28 +30,28 @@ namespace PlaylistGrabber
         }
 
         [TestMethod]
-        public void WhenSourcePathsNull_Throws()
+        public async Task WhenSourcePathsNull_Throws()
         {
-            Assert.ThrowsException<ArgumentNullException>(() => downloader.DownloadFiles(null));
+            await Assert.ThrowsExceptionAsync<ArgumentNullException>(() => downloader.DownloadFilesAsync(null));
         }
 
         [TestMethod]
-        public void WhenSourcePathsEmpty_Skipped()
+        public async Task WhenSourcePathsEmpty_Skipped()
         {
             //arrange
             var uris = new List<Uri>();
 
             // act
-            downloader.DownloadFiles(uris);
+            await downloader.DownloadFilesAsync(uris);
 
             // assert
             Assert.AreEqual("Downloading...", downloader.State);
             Assert.AreEqual(0, downloader.TotalFiles);
-            Assert.AreEqual(0, downloader.DownloadedFiles);
+            Assert.AreEqual(0, downloader.CompletedDownloadAttempts);
         }
 
         [TestMethod]
-        public void WhenSourcePathsContainsValidUriString_DownloadsFile_AndUpdatesCount()
+        public async Task WhenSourcePathsContainsValidUriString_DownloadsFile_AndUpdatesCount()
         {
             //arrange
             var uris = new List<Uri>
@@ -61,12 +62,12 @@ namespace PlaylistGrabber
             };
 
             // act
-            downloader.DownloadFiles(uris);
+            await downloader.DownloadFilesAsync(uris);
 
             // assert
             Assert.AreEqual("Downloading...", downloader.State);
             Assert.AreEqual(uris.Count(), downloader.TotalFiles);
-            Assert.AreEqual(uris.Count(), downloader.DownloadedFiles);
+            Assert.AreEqual(uris.Count(), downloader.CompletedDownloadAttempts);
         }
     }
 }

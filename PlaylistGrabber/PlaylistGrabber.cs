@@ -54,7 +54,13 @@ namespace PlaylistGrabber
 
             Task.Run(() =>
             {
-                this.downloader.DownloadFiles(uris);
+                var task = this.downloader.DownloadFilesAsync(uris);
+                var failures = task.Result.Where(r => r.DownloadResultType == DownloadResultType.Failure);
+                if (failures.Any())
+                {
+                    var report = string.Join(Environment.NewLine, failures.Select(result => $"{result.DownloadUri.Segments.Last()}: {result.DownloadResultMessage}"));
+                    MessageBox.Show(text: report, caption: "Download Failures", buttons: MessageBoxButtons.OK);
+                }
             })
             .ContinueWith(task => timer.Stop(), TaskScheduler.FromCurrentSynchronizationContext())
             .ContinueWith(task => SetStateIdle(), TaskScheduler.FromCurrentSynchronizationContext());
@@ -95,10 +101,10 @@ namespace PlaylistGrabber
                 labelMessage.Text = this.downloader.State;
             }
 
-            SetProgressLabel(this.downloader.DownloadedFiles, this.downloader.TotalFiles);
+            SetProgressLabel(this.downloader.CompletedDownloadAttempts, this.downloader.TotalFiles);
 
             progressBar.Maximum = this.downloader.TotalFiles;
-            progressBar.Value = this.downloader.DownloadedFiles;
+            progressBar.Value = this.downloader.CompletedDownloadAttempts;
         }
 
         private void AddPlaylistContentsToListBox(string playlistFilePath)

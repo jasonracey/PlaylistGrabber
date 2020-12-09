@@ -7,21 +7,21 @@ namespace PlaylistGrabber
 {
     public interface IDownloader
     {
-        int DownloadedFiles { get; }
+        int CompletedDownloadAttempts { get; }
         string State { get; }
         int TotalFiles { get; }
 
-        void DownloadFiles(IEnumerable<Uri> uris);
+        Task<IEnumerable<DownloadResult>> DownloadFilesAsync(IEnumerable<Uri> uris);
     }
 
-    public class Downloader : IDownloader
+    public partial class Downloader : IDownloader
     {
         private readonly IDestinationPathBuilder destinationPathBuilder;
         private readonly IWebClientWrapper webClientWrapper;
 
         public string State { get; private set; }
 
-        public int DownloadedFiles { get; private set; }
+        public int CompletedDownloadAttempts { get; private set; }
 
         public int TotalFiles { get; private set; }
 
@@ -38,7 +38,7 @@ namespace PlaylistGrabber
             State = string.Empty;
         }
 
-        public void DownloadFiles(IEnumerable<Uri> uris)
+        public async Task<IEnumerable<DownloadResult>> DownloadFilesAsync(IEnumerable<Uri> uris)
         {
             if (uris == null)
                 throw new ArgumentNullException(nameof(uris));
@@ -46,14 +46,32 @@ namespace PlaylistGrabber
             State = $"Downloading...";
             TotalFiles = uris.Count();
 
-            Task.WaitAll(uris.Select(uri => DownloadFileAsync(uri)).ToArray());
+            var results = new List<DownloadResult>();
+
+            await Task.WhenAll(uris.Select(async uri =>
+            {
+                try
+                {
+                    await DownloadFileAsync(uri).ConfigureAwait(false);
+                    results.Add(new DownloadResult(uri, DownloadResultType.Success, DownloadResultType.Success.ToString()));
+                }
+                catch (Exception ex)
+                {
+                    results.Add(new DownloadResult(uri, DownloadResultType.Failure, ex.Message));
+                }
+                finally
+                {
+                    CompletedDownloadAttempts++;
+                }
+            }));
+
+            return results;
         }
 
         private async Task DownloadFileAsync(Uri uri)
         {
             var destinationPath = this.destinationPathBuilder.CreateDestinationPath(uri);
             await this.webClientWrapper.DownloadFileTaskAsync(uri, destinationPath).ConfigureAwait(false);
-            DownloadedFiles++;
         }
     }
 }
