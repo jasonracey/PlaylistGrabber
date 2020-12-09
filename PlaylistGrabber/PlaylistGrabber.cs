@@ -47,14 +47,14 @@ namespace PlaylistGrabber
         {
             SetStateBusy();
 
-            var sourcePaths = listBox.Items.Cast<string>();
+            var uris = listBox.Items.Cast<Uri>();
 
             timer.Interval = 500;
             timer.Start();
 
             Task.Run(() =>
             {
-                this.downloader.DownloadFiles(sourcePaths);
+                this.downloader.DownloadFiles(uris);
             })
             .ContinueWith(task => timer.Stop(), TaskScheduler.FromCurrentSynchronizationContext())
             .ContinueWith(task => SetStateIdle(), TaskScheduler.FromCurrentSynchronizationContext());

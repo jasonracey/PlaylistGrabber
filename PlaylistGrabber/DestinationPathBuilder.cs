@@ -4,7 +4,7 @@ namespace PlaylistGrabber
 {
     public interface IDestinationPathBuilder
     {
-        string CreateDestinationPath(string sourcePath);
+        string CreateDestinationPath(Uri uri);
     }
 
     public class DestinationPathBuilder : IDestinationPathBuilder
@@ -28,15 +28,9 @@ namespace PlaylistGrabber
                 throw new ArgumentNullException(nameof(fileWrapper));
         }
 
-        public string CreateDestinationPath(string sourcePath)
+        public string CreateDestinationPath(Uri uri)
         {
-            if (string.IsNullOrWhiteSpace(sourcePath))
-                throw new ArgumentException("Must not be null or white space", nameof(sourcePath));
-
-            if (!Uri.IsWellFormedUriString(sourcePath, UriKind.Absolute))
-                throw new ArgumentException("Must be a well-formed absolute uri string", nameof(sourcePath));
-
-            var parts = sourcePath.Split('/');
+            var parts = uri.AbsolutePath.Split('/');
             var directoryName = parts[^2];
             var fileName = parts[^1];
 

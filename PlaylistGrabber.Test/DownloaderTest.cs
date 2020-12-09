@@ -2,6 +2,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace PlaylistGrabber
 {
@@ -37,31 +38,10 @@ namespace PlaylistGrabber
         public void WhenSourcePathsEmpty_Skipped()
         {
             //arrange
-            var sourcePaths = new List<string>();
+            var uris = new List<Uri>();
 
             // act
-            downloader.DownloadFiles(sourcePaths);
-
-            // assert
-            Assert.AreEqual("Downloading...", downloader.State);
-            Assert.AreEqual(0, downloader.TotalFiles);
-            Assert.AreEqual(0, downloader.DownloadedFiles);
-        }
-
-        [DataTestMethod]
-        [DataRow(null)]
-        [DataRow(" ")]
-        [DataRow("www.contoso.com/path/file")]
-        public void WhenSourcePathsContainsInvalidPath_Skipped(string invalidPath)
-        {
-            //arrange
-            var sourcePaths = new List<string>
-            {
-                invalidPath
-            };
-
-            // act
-            downloader.DownloadFiles(sourcePaths);
+            downloader.DownloadFiles(uris);
 
             // assert
             Assert.AreEqual("Downloading...", downloader.State);
@@ -73,24 +53,20 @@ namespace PlaylistGrabber
         public void WhenSourcePathsContainsValidUriString_DownloadsFile_AndUpdatesCount()
         {
             //arrange
-            var sourcePaths = new List<string>
+            var uris = new List<Uri>
             {
-                null,
-                "https://www.contoso.com/path/file1",
-                string.Empty,
-                "https://www.contoso.com/path/file2",
-                "www.contoso.com/path/file",
-                "https://www.contoso.com/path/file3",
-                "https://www.contoso.com/path/file4",
+                new Uri("https://www.contoso.com/path/file1"),
+                new Uri("https://www.contoso.com/path/file2"),
+                new Uri("https://www.contoso.com/path/file3"),
             };
 
             // act
-            downloader.DownloadFiles(sourcePaths);
+            downloader.DownloadFiles(uris);
 
             // assert
             Assert.AreEqual("Downloading...", downloader.State);
-            Assert.AreEqual(4, downloader.TotalFiles);
-            Assert.AreEqual(4, downloader.DownloadedFiles);
+            Assert.AreEqual(uris.Count(), downloader.TotalFiles);
+            Assert.AreEqual(uris.Count(), downloader.DownloadedFiles);
         }
     }
 }

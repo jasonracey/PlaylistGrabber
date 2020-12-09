@@ -11,7 +11,7 @@ namespace PlaylistGrabber
         string State { get; }
         int TotalFiles { get; }
 
-        void DownloadFiles(IEnumerable<string> sourcePaths);
+        void DownloadFiles(IEnumerable<Uri> uris);
     }
 
     public class Downloader : IDownloader
@@ -38,25 +38,21 @@ namespace PlaylistGrabber
             State = string.Empty;
         }
 
-        public void DownloadFiles(IEnumerable<string> sourcePaths)
+        public void DownloadFiles(IEnumerable<Uri> uris)
         {
-            if (sourcePaths == null)
-                throw new ArgumentNullException(nameof(sourcePaths));
-
-            var validSourcePaths = sourcePaths
-                .Where(s => !string.IsNullOrWhiteSpace(s))
-                .Where(s => Uri.IsWellFormedUriString(s, UriKind.Absolute));
+            if (uris == null)
+                throw new ArgumentNullException(nameof(uris));
 
             State = $"Downloading...";
-            TotalFiles = validSourcePaths.Count();
+            TotalFiles = uris.Count();
 
-            Task.WaitAll(validSourcePaths.Select(sourcePath => DownloadFileAsync(sourcePath)).ToArray());
+            Task.WaitAll(uris.Select(uri => DownloadFileAsync(uri)).ToArray());
         }
 
-        private async Task DownloadFileAsync(string sourcePath)
+        private async Task DownloadFileAsync(Uri uri)
         {
-            var destinationPath = this.destinationPathBuilder.CreateDestinationPath(sourcePath);
-            await this.webClientWrapper.DownloadFileTaskAsync(sourcePath, destinationPath).ConfigureAwait(false);
+            var destinationPath = this.destinationPathBuilder.CreateDestinationPath(uri);
+            await this.webClientWrapper.DownloadFileTaskAsync(uri, destinationPath).ConfigureAwait(false);
             DownloadedFiles++;
         }
     }
