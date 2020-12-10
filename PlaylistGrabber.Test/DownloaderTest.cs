@@ -30,28 +30,30 @@ namespace PlaylistGrabber
         }
 
         [TestMethod]
-        public async Task WhenSourcePathsNull_Throws()
+        public async Task WhenUrisNull_Throws()
         {
             await Assert.ThrowsExceptionAsync<ArgumentNullException>(() => downloader.DownloadFilesAsync(null));
         }
 
         [TestMethod]
-        public async Task WhenSourcePathsEmpty_Skipped()
+        public async Task WhenUrisEmpty_Skipped()
         {
             //arrange
             var uris = new List<Uri>();
 
             // act
-            await downloader.DownloadFilesAsync(uris);
+            var downloadResults = await downloader.DownloadFilesAsync(uris);
 
             // assert
             Assert.AreEqual("Downloading...", downloader.State);
             Assert.AreEqual(0, downloader.TotalFiles);
             Assert.AreEqual(0, downloader.CompletedDownloadAttempts);
+            Assert.IsNotNull(downloadResults);
+            Assert.AreEqual(uris.Count, downloadResults.Count());
         }
 
         [TestMethod]
-        public async Task WhenSourcePathsContainsValidUriString_DownloadsFile_AndUpdatesCount()
+        public async Task WhenDownloadSucceeds_UpdatesCount_AndReturnsSuccessResult()
         {
             //arrange
             var uris = new List<Uri>
@@ -62,12 +64,50 @@ namespace PlaylistGrabber
             };
 
             // act
-            await downloader.DownloadFilesAsync(uris);
+            var downloadResults = await downloader.DownloadFilesAsync(uris);
 
             // assert
             Assert.AreEqual("Downloading...", downloader.State);
             Assert.AreEqual(uris.Count(), downloader.TotalFiles);
             Assert.AreEqual(uris.Count(), downloader.CompletedDownloadAttempts);
+            Assert.IsNotNull(downloadResults);
+            Assert.AreEqual(uris.Count, downloadResults.Count());
+            foreach (var downloadResult in downloadResults)
+            {
+                Assert.AreEqual(DownloadResultType.Success.ToString(), downloadResult.DownloadResultMessage);
+                Assert.AreEqual(DownloadResultType.Success, downloadResult.DownloadResultType);
+                Assert.IsTrue(uris.Contains(downloadResult.DownloadUri));
+            }
+        }
+
+        [TestMethod]
+        public async Task WhenDownloadFails_UpdatesCount_AndReturnsFailureResult()
+        {
+            //arrange
+            const string mockMessage = "mock error message";
+            var uris = new List<Uri>
+            {
+                new Uri("https://www.contoso.com/path/file1"),
+            };
+            mockWebClientWrapper
+                .Setup(m => m.DownloadFileTaskAsync(It.IsAny<Uri>(), It.IsAny<string>()))
+                .ThrowsAsync(new Exception(mockMessage));
+
+            // act
+            var downloadResults = await downloader.DownloadFilesAsync(uris);
+
+            // assert
+            Assert.AreEqual("Downloading...", downloader.State);
+            Assert.AreEqual(uris.Count(), downloader.TotalFiles);
+            Assert.AreEqual(uris.Count(), downloader.CompletedDownloadAttempts);
+            Assert.IsNotNull(downloadResults);
+            Assert.AreEqual(uris.Count, downloadResults.Count());
+            foreach (var downloadResult in downloadResults)
+            {
+                Assert.AreEqual(mockMessage, downloadResult.DownloadResultMessage);
+                Assert.AreEqual(DownloadResultType.Failure, downloadResult.DownloadResultType);
+                Assert.AreEqual(uris[0], downloadResult.DownloadUri);
+            }
         }
     }
 }
