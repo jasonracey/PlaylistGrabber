@@ -30,6 +30,9 @@ namespace PlaylistGrabber
 
         public string CreateDestinationPath(Uri uri)
         {
+            if (uri == null)
+                throw new ArgumentNullException(nameof(uri));
+
             var parts = uri.AbsolutePath.Split('/');
             var directoryName = parts[^2];
             var fileName = parts[^1];
