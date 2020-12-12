@@ -1,4 +1,5 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
 
 namespace PlaylistGrabber
 {
@@ -9,6 +10,7 @@ namespace PlaylistGrabber
 
     public class Configuration : IConfiguration
     {
-        public string DestinationPathBase => ConfigurationManager.AppSettings.Get("DestinationPathBase");
+        public string DestinationPathBase => ConfigurationManager.AppSettings.Get("DestinationPathBase") ??
+            throw new ArgumentException("App.config key DestinationPathBase returned null");
     }
 }
