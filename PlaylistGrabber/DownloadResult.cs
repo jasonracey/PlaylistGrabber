@@ -2,20 +2,13 @@
 
 namespace PlaylistGrabber
 {
-    public enum DownloadResultType
+    public sealed record DownloadResult
     {
-        None = 0,
-        Success = 1,
-        Failure = 2
-    }
+        public Uri DownloadUri { get; }
 
-    public class DownloadResult
-    {
-        public Uri DownloadUri { get; private set; }
+        public DownloadResultType DownloadResultType { get; }
 
-        public DownloadResultType DownloadResultType { get; private set; }
-
-        public string DownloadResultMessage { get; private set; }
+        public string DownloadResultMessage { get; }
 
         public DownloadResult(
             Uri downloadUri,
