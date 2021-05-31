@@ -43,6 +43,7 @@ namespace PlaylistGrabber
             if (uris == null)
                 throw new ArgumentNullException(nameof(uris));
 
+            CompletedDownloadAttempts = 0;
             State = $"Downloading...";
             TotalFiles = uris.Count();
 

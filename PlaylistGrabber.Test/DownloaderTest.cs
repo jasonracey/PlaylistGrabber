@@ -55,7 +55,7 @@ namespace PlaylistGrabber
         [TestMethod]
         public async Task WhenDownloadSucceeds_UpdatesCount_AndReturnsSuccessResult()
         {
-            //arrange
+            // arrange
             var uris = new List<Uri>
             {
                 new Uri("https://www.contoso.com/path/file1"),
@@ -78,6 +78,25 @@ namespace PlaylistGrabber
                 Assert.AreEqual(DownloadResultType.Success, downloadResult.DownloadResultType);
                 Assert.IsTrue(uris.Contains(downloadResult.DownloadUri));
             }
+        }
+
+        [TestMethod]
+        public async Task WhenDownloadStarts_ResetsCount()
+        {
+            // arrange
+            var uris = new List<Uri>
+            {
+                new Uri("https://www.contoso.com/path/file1"),
+                new Uri("https://www.contoso.com/path/file2"),
+                new Uri("https://www.contoso.com/path/file3"),
+            };
+
+            // act
+            await downloader.DownloadFilesAsync(uris);
+            await downloader.DownloadFilesAsync(uris);
+
+            // assert
+            Assert.AreEqual(uris.Count(), downloader.CompletedDownloadAttempts);
         }
 
         [TestMethod]
